@@ -15,13 +15,23 @@ module Decidim
       skip_before_action :store_current_location
 
       def index
+        # If the user has any favorites, redirect to the first category.
+        # If not, it renders the 'index' view (Empty State).
         redirect_to favorite_path(types.keys.first) if types.any?
       end
 
       def show
         @selected_type = params[:type]
         @type = types[@selected_type]
-        raise ActionController::RoutingError, "Not Found" unless @type
+
+        # --- FIX START ---
+        # OLD CODE: raise ActionController::RoutingError, "Not Found" unless @type
+        # NEW CODE: If the category is missing (e.g. last item removed), redirect to index.
+        unless @type
+          redirect_to action: :index
+          return
+        end
+        # --- FIX END ---
 
         @resources = @type[:klass].user_favorites(current_user)
       end
@@ -82,7 +92,7 @@ module Decidim
           [
             klass.model_name.singular,
             {
-              klass:,
+              klass: klass,
               name: klass.model_name.human(count: 2)
             }
           ]
