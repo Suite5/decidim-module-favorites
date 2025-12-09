@@ -7,27 +7,24 @@ edit_link(
 )
 %>
 
-<div class="wrapper">
-  <div class="row column">
-    <div class="main-container tabbed-container">
-      <div class="row main-container--side-panel">
-        <div class="columns medium-12">
-          <div class="main-container__content">
-            <div class="tabs-content vertical">
-              <div class="static__content">
-                <h1 class="heading1 page-title">
-                  <%= t ".title" %>
-                </h1>
-                <%= t(".description_html") %>
-                <div class="aria-hidden">
-                  <p><%= t(".icon_description") %></p>
-                  <p><%== cell("decidim/favorites/favorite_button", nil).example %></p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+<div class="container py-8">
+  <div class="w-full md:w-3/4 mx-auto bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+    
+    <h1 class="h2 decorator mb-6">
+      <%= t ".title" %>
+    </h1>
+
+    <div class="prose mb-8 text-gray-600">
+      <%= t(".description_html") %>
     </div>
+
+    <div class="flex items-center gap-2 text-gray-600 mt-4">
+      <p class="m-0">
+        <%= t(".icon_description") %>
+      </p>
+      
+      <%= icon "star-line", class: "w-6 h-6 text-gray-500 fill-current" %>
+    </div>
+
   </div>
 </div>
