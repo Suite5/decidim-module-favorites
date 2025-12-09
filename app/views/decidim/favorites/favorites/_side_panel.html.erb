@@ -16,8 +16,8 @@
            # 3. TAILWIND STYLES
            # Active: White bg, shadow, bold, color.
            # Inactive: Gray text, hover effect.
-           active_classes = "bg-white shadow-sm font-bold text-secondary"
-           inactive_classes = "text-gray-600 hover:bg-gray-200/50"
+           active_classes = "bg-white font-bold text-secondary"
+           inactive_classes = ""
         %>
         
         <li>
@@ -26,7 +26,7 @@
              This stays on the current page/controller but updates the 'type' parameter.
              It fixes the "refreshing to default" issue.
           %>
-          <%= link_to data[:name], url_for(type: target_key), class: "block px-4 py-3 rounded-md transition-colors #{is_active ? active_classes : inactive_classes}" %>
+          <%= link_to data[:name], url_for(type: target_key), class: "block !text-gray-500 px-4 #{is_active ? active_classes : inactive_classes}" %>
         </li>
       <% end %>
     </ul>
