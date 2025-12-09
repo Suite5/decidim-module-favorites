@@ -6,35 +6,28 @@ edit_link(
   :static_page
 )
 %>
-
 <div class="flex flex-col md:flex-row gap-8 w-full py-8">
-  
   <aside class="w-full md:w-1/4">
     <div class="card p-4 bg-gray-50 rounded-lg border border-gray-100">
       <%= render "side_panel" %>
     </div>
   </aside>
-
-<main class="w-full md:w-3/4">
-    
+  <main class="w-full md:w-3/4">
     <div class="mb-8">
       <h1 class="h2 decorator"><%= t ".title" %></h1>
     </div>
-
     <div class="prose mb-8 text-gray-600">
       <%= t(".description_html") %>
     </div>
-
     <h2 class="h3 font-bold mb-6"><%= @type[:name] %></h2>
-
-    <div id="ideas">
+   <div id="ideas">
       <% if @resources.any? %>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pr-4">
           
           <% @resources.each do |resource| %>
             <% 
-               # Logic: Check if the resource is a "Participatory Space" (Big Item)
-               # We check for Assemblies, Conferences, and Initiatives.
+               # Check type
                is_space = resource.is_a?(Decidim::Assembly) || 
                           (defined?(Decidim::Conference) && resource.is_a?(Decidim::Conference)) ||
                           (defined?(Decidim::Initiative) && resource.is_a?(Decidim::Initiative))
@@ -42,61 +35,64 @@ edit_link(
 
             <% if is_space %>
               <div class="flex flex-col h-full bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-                
-                <% 
-                   image_url = nil
-                   if resource.respond_to?(:attached_uploader)
-                     # Try to get hero image, fallback to banner, fallback to generic
-                     uploader = resource.attached_uploader(:hero_image) || resource.attached_uploader(:banner_image)
-                     image_url = uploader.url if uploader
-                   end
-                %>
-                
-                <div class="h-32 w-full bg-gray-200 relative">
-                  <% if image_url %>
-                    <%= image_tag image_url, class: "w-full h-full object-cover" %>
-                  <% else %>
-                    <div class="w-full h-full bg-gray-100 flex items-center justify-center text-gray-300">
-                      <%= icon "image-line", class: "w-8 h-8" %>
-                    </div>
-                  <% end %>
-                </div>
+                 <div class="h-32 w-full bg-gray-200 relative">
+                   <% 
+                      image_url = nil
+                      if resource.respond_to?(:attached_uploader)
+                        uploader = resource.attached_uploader(:hero_image) || resource.attached_uploader(:banner_image)
+                        image_url = uploader.url if uploader
+                      end
+                   %>
+                   <% if image_url %>
+                     <%= image_tag image_url, class: "w-full h-full object-cover" %>
+                   <% else %>
+                     <div class="w-full h-full bg-gray-100 flex items-center justify-center text-gray-300">
+                       <%= icon "image-line", class: "w-8 h-8" %>
+                     </div>
+                   <% end %>
+                 </div>
 
-                <div class="p-4 flex flex-col flex-grow">
-                  <div class="mb-2">
-                    <span class="text-xs font-bold uppercase tracking-wider text-gray-500">
-                      <%= resource.model_name.human %>
-                    </span>
-                  </div>
-
-                  <%= link_to translated_attribute(resource.title), resource_locator(resource).path, class: "h4 leading-tight font-bold text-gray-800 hover:text-secondary hover:underline mb-4 line-clamp-2" %>
-                  
-                  <div class="mt-auto flex items-center justify-between border-t border-gray-100 pt-3">
-                    <div class="text-xs text-gray-400">
-                      <%# Optional: Show Creation Date or ID %>
-                      <%= l resource.created_at.to_date, format: :decidim_short %>
-                    </div>
-                    
-                    <%# The Favorite Button %>
-                    <div>
-                      <%== cell("decidim/favorites/favorite_button", resource, hide_text: true) %>
-                    </div>
-                  </div>
-                </div>
+                 <div class="p-4 flex flex-col flex-grow">
+                   <div class="mb-2">
+                     <span class="text-xs font-bold uppercase tracking-wider text-gray-500">
+                       <%= resource.model_name.human %>
+                     </span>
+                   </div>
+                   
+                   <%= link_to translated_attribute(resource.title), resource_locator(resource).path, class: "h4 leading-tight font-bold text-gray-800 hover:text-secondary hover:underline mb-4 line-clamp-2" %>
+                   
+                   <div class="mt-auto flex items-center justify-between border-t border-gray-100 pt-3">
+                     <div class="text-xs text-gray-400">
+                       <%= l resource.created_at.to_date, format: :decidim_short %>
+                     </div>
+                     <div>
+                       <%== cell("decidim/favorites/favorite_button", resource, hide_text: true) %>
+                     </div>
+                   </div>
+                 </div>
               </div>
 
             <% else %>
-              <%= card_for(resource) %>
+              <div class="col-span-1 md:col-span-2 flex flex-row items-start gap-4">
+                <div>
+                  <%= card_for(resource) %>
+                </div>
+                <div class="pt-2">
+                  <span>
+                    <%== cell("decidim/favorites/favorite_button", resource, hide_text: true) %>
+                  </span>
+                </div>
+              </div>
             <% end %>
           <% end %>
         
         </div>
+
       <% else %>
         <div class="callout warning p-4 bg-yellow-50 border border-yellow-100 rounded text-yellow-800">
           <p><%= t(".no_favorites", default: "No favorites found.") %></p>
         </div>
       <% end %>
     </div>
-
   </main>
 </div>
