@@ -1,12 +1,34 @@
-<div class="sub-navigation">
+<div class="w-full">
   <nav role="navigation" aria-label="<%= t(".nav_label") %>">
-    <ul class="vertical striped large menu" role="menubar">
-      <% types.each do |key, type| %>
-        <li role="presentation" class="page-item <%= @selected_type == key ? "is-active" : nil %>">
-          <%= link_to type[:name], favorite_path(type: key), role: "menuitem" %>
+    <ul class="flex flex-col space-y-1">
+      <% types.each do |raw_key, data| %>
+        <% 
+           # 1. PARAMETER HANDLING
+           # We use .to_s to ensure we have a string, but we keep the key exactly as is.
+           # (e.g., "Decidim::Proposals::Proposal")
+           target_key = raw_key.to_s
+
+           # 2. CHECK ACTIVE STATE
+           # We compare strings to ensure accurate highlighting.
+           # We check params[:type] (URL) and @selected_type (Controller variable)
+           is_active = params[:type].to_s == target_key || @selected_type.to_s == target_key
+           
+           # 3. TAILWIND STYLES
+           # Active: White bg, shadow, bold, color.
+           # Inactive: Gray text, hover effect.
+           active_classes = "bg-white shadow-sm font-bold text-secondary"
+           inactive_classes = "text-gray-600 hover:bg-gray-200/50"
+        %>
+        
+        <li>
+          <%# 
+             FIX: Use `url_for` instead of a named path helper.
+             This stays on the current page/controller but updates the 'type' parameter.
+             It fixes the "refreshing to default" issue.
+          %>
+          <%= link_to data[:name], url_for(type: target_key), class: "block px-4 py-3 rounded-md transition-colors #{is_active ? active_classes : inactive_classes}" %>
         </li>
       <% end %>
     </ul>
   </nav>
 </div>
-
