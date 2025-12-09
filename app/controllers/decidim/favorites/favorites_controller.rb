@@ -5,6 +5,9 @@ module Decidim
     class FavoritesController < Decidim::ApplicationController
       include Decidim::FormFactory
 
+      helper Decidim::ResourceHelper
+      helper Decidim::IconHelper
+
       helper Decidim::CardHelper
       helper_method :types, :button_options
 
